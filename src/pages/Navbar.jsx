@@ -12,10 +12,9 @@ function Navbar() {
   return (
     <>
       <div
-        style={{ padding: "12px", marginTop: "3px" }}
         className="border-b border-gray-300"
       >
-        <div className="w-full flex justify-between items-center">
+        <div className="w-full flex justify-between items-center px-24 my-4">
           <img
             src="jess.png"
             alt="logo"
@@ -34,8 +33,8 @@ function Navbar() {
           </div>
           
          
-          <div className="flex justify-center gap-2 w-[40%]">
-            <button className="border rounded-lg w-30 p-3 font-bold bg-blue-600">
+          <div className="flex justify-between gap-2 w-[50%]">
+            <button className="border rounded-lg w-30 p-3 font-bold bg-blue-600 text-white">
               Ask question
             </button>
             <button className="w-30 p-3 font-bold">
@@ -43,9 +42,10 @@ function Navbar() {
             </button><button className="w-30 p-3 font-bold">
               Level
             </button>
+            <div className="w-fit flex justify-end items-center gap-4">
             <button
               onClick={() => setOpenLoginModal(true)}
-              className=" cursor-pointer border rounded-lg w-20 font-bold bg-black text-white"
+              className=" cursor-pointer border rounded-lg p-3 font-bold bg-black text-white"
             >
   
               Login
@@ -53,10 +53,11 @@ function Navbar() {
             
             <button
               onClick={() => setOpenSignUpModal(true)}
-              className=" w-[20%] h-10 cursor-pointer font-bold text-black"
+              className=" cursor-pointer p-3 font-bold border border-black/75 rounded-lg text-black"
             >
               Sign Up
             </button>
+            </div>
 
             {/* <Link>Sign Up</Link> */}
           </div>

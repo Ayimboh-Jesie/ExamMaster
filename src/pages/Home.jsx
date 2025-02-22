@@ -6,14 +6,15 @@ import Sidebar from "./Sidebar";
 import QuestionList from "./questions/QuestionList";
 function Home() {
   return (
-    <div className=" h-screen">
+    <div className=" h-screen oversflow-y-none">
         <Navbar />
-      <div className="flex">
+        <hr />
+      <div className="flex px-24 h-screen ">
       <aside className="w-2/12">
         <Sidebar />
       </aside>
 
-        <main style={{padding:"24px 24px"}} className="w-full px-12 my-12">
+        <main style={{padding:"24px 24px"}} className="w-full px-12 mt-1 overflow-y-scroll">
           <QuestionList />
         </main>
       </div>

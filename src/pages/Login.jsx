@@ -55,14 +55,14 @@ function Login({ openSignUp, closeLoginModal }) {
   };
 
   return (
-    <div className="bg-white flex flex-col gap-12 shadow-lg rounded-lg w-full h-[80%] p-6">
+    <div className="flex flex-col gap-12 p-6 rounded-lg w-full">
       {/* {Object.keys(formErrors).length === 0 && isSubmit ? (
         <div className="ui message success">Login successful</div>
       ) : (
         <pre>{JSON.stringify(formValues, null, 2)}</pre>
       )} */}
 
-      <form onSubmit={handleSubmit} className=" flex flex-col gap-12">
+      <form onSubmit={handleSubmit} className=" flex flex-col gap-6">
         <div className="text-center mb-6">
           <h2 className="text-2xl font-semibold text-gray-700">Sign In</h2>
           <hr className="mt-2 border-gray-300" />
@@ -82,22 +82,13 @@ function Login({ openSignUp, closeLoginModal }) {
           value={formValues.email}
           onChange={handleChange}
         />
-        <InputText placeholder="Email" className="p-inputtext-lg" />
-
-        <FloatLabel>
-          <InputText
-          className="p-inputtext-lg"
-            id="username"
-          />
-          <label htmlFor="username">Username</label>
-        </FloatLabel>
 
         <input
           name="password"
           type="password"
           placeholder="Enter your password"
-          className="w-full p-3 border rounded-lg mb-3"
-          style={{ width: "100%", padding: "8px", borderRadius: "8px" }}
+          className="w-full p-3 border border-gray-500 rounded-lg mb-3"
+          // style={{ width: "100%", padding: "8px", borderRadius: "8px" }}
           value={formValues.password}
           onChange={handleChange}
         />

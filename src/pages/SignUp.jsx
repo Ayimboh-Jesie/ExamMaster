@@ -67,22 +67,13 @@ function SignUp({ openLogin, closeSignupModal }) {
   };
 
   return (
-    <div className="bg-white flex flex-col gap-4 shadow-lg rounded-lg w-[50%] h-[80%] p-6">
-      {Object.keys(formErrors).length === 0 && isSubmit ? (
-        <div className="ui message success">Signed in successfully</div>
-      ) : (
-        <pre>{JSON.stringify(formValues, null, 2)}</pre>
-      )}
+    <div className="bg-white w-full p-6">
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className=" flex flex-col gap-4 ">
         <div className="text-center mb-6">
           <h2 className="text-2xl font-semibold text-gray-700">Sign Up</h2>
           <hr className="mt-2 border-gray-300" />
         </div>
-
-        {Object.values(formErrors).map((error, index) => (
-          <p key={index} className="text-red-500 text-sm">{error}</p>
-        ))}
 
         <input
           name="username"

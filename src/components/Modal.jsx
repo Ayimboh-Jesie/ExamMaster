@@ -8,12 +8,12 @@ export default function Modal({ open, onClose, children }) {
       <div
         onClick={(e) => e.stopPropagation()}
         style={{padding:'6px'}}
-        className={`w-[90%] md:w-1/2 lg:w-2/4 px-6 bg-white rounded-xl shawdow-lg p-6 transition-all
+        className={`w-[90%] md:w-1/3 lg:w-1/3 h-fit overflow-y-scroll px-12 bg-white rounded-xl shawdow-lg p-24 transition-all
             ${open ? "scale-100 opacity-100" : "scale-125 opacity-0"}`}
       >
         <button
           onClick={onClose}
-          className=" w-[4%] cursor-pointer absolute top-2 right-2 p-1 rounded-lg text-gray-400 bg-red-500 hover:bg-gray-50 hover:text-gray-600"
+          className=" w-6 h-6 flex justify-center items-center cursor-pointer absolute top-2 right-2 p-3 text-sm rounded-full text-gray-500 bg-gray-200 hover:bg-gray-300 hover:text-gray-600"
         >
           X
         </button>
