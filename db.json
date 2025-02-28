@@ -1,0 +1,65 @@
+{
+  "Users": [
+    {
+      "id": "058e",
+      "username": "Jesie",
+      "email": "Ayimbohjessible@gmail.com",
+      "password": "123456",
+      "confirmPassword": "123456"
+    },
+    {
+      "id": "e436",
+      "username": "Jesie",
+      "email": "Ayimbohjessible@gmail.com",
+      "password": "123456",
+      "confirmPassword": "123456"
+    },
+    {
+      "id": "e70b",
+      "username": "tanue",
+      "email": "tanue@monet.com",
+      "password": "tanue",
+      "confirmPassword": "tanue"
+    },
+    {
+      "id": "ebce",
+      "username": "john doe",
+      "email": "john@doe.com",
+      "password": "tanue",
+      "confirmPassword": "tanue"
+    },
+    {
+      "id": "1c44",
+      "username": "ayimbohjessible",
+      "email": "Ayimbohjessible@gmail.com",
+      "password": "1234",
+      "confirmPassword": "1234"
+    }
+  ],
+  "Questions": [
+    {
+      "id": "44a6",
+      "fieldOfStudy": "Home Eco/Tourism/Hotel",
+      "year": "2022",
+      "examType": "Second Semester",
+      "teacher": "Mr. Ateh",
+      "description": "i am alady and you?"
+    },
+    {
+      "id": "2512",
+      "fieldOfStudy": "Communication",
+      "year": "2024",
+      "examType": "Second Semester",
+      "teacher": "Mr. Tantoh",
+      "description": "i am a good girl"
+    },
+    {
+      "id": "214e",
+      "fieldOfStudy": "Business and Management",
+      "year": "2025",
+      "examType": "First Semester",
+      "teacher": "Mr. Tantoh",
+      "description": "asdasfasdfsdfefasdf"
+    }
+  ]
+}

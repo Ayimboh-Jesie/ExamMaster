@@ -1,121 +1,125 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import Modal from "../components/Modal";
-import Login from "./Login";
+import { useForm } from "react-hook-form";
+import axiosInstance from "../config/axios";
 
 function SignUp({ openLogin, closeSignupModal }) {
+  const [isLoading, setIsLoading] = useState(false);
   const handleLoginClick = () => {
-    closeSignupModal(false);
+    closeSignUpModal(false);
     openLogin(true);
   };
 
-  const initialValues = {
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  };
-  const [formValues, setFormValues] = useState(initialValues);
-  const [formErrors, setFormErrors] = useState({});
-  const [isSubmit, setIsSubmit] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const errors = validate(formValues);
-    setFormErrors(errors);
-    if (Object.keys(errors).length === 0) {
-      setIsSubmit(true);
+  const onSubmit = async (data) => {
+    // e.preventDefault();
+    try {
+      const response = await axiosInstance.post(`Users/`, data);
+      setIsLoading(true);
+      if (response) {
+        reset();
+      }
+      setIsLoading(false);
+      console.log("registered user:", response )
+    } catch (error) {
+      console.log("unable to creaete user",error)
+      setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (Object.keys(formErrors).length === 0 && isSubmit) {
-      // Submit form logic
-    }
-  }, [formErrors, isSubmit]);
-
-  const validate = (values) => {
-    const errors = {};
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-    if (!values.username) {
-      errors.username = "Username is required!";
-    }
-    if (!values.email) {
-      errors.email = "Email is required!";
-    } else if (!regex.test(values.email)) {
-      errors.email = "This is not a valid email!";
-    }
-    if (!values.password) {
-      errors.password = "Password is required!";
-    } else if (values.password.length < 4) {
-      errors.password = "Password must be more than 4 characters";
-    } else if (values.password.length > 10) {
-      errors.password = "Password cannot exceed more than 10 characters";
-    }
-    if (!values.confirmPassword) {
-      errors.confirmPassword = "Confirm password is required!";
-    } else if (values.confirmPassword !== values.password) {
-      errors.confirmPassword = "Passwords do not match!";
-    }
-    return errors;
-  };
-
   return (
     <div className="bg-white w-full p-6">
-
-      <form onSubmit={handleSubmit} className=" flex flex-col gap-4 ">
+      <form onSubmit={handleSubmit(onSubmit)} className=" flex flex-col gap-2 ">
         <div className="text-center mb-6">
           <h2 className="text-2xl font-semibold text-gray-700">Sign Up</h2>
           <hr className="mt-2 border-gray-300" />
         </div>
-
         <input
           name="username"
           type="text"
           placeholder="Enter your username"
           className="w-full p-3 border rounded-lg mb-3"
-          value={formValues.username}
-          onChange={handleChange}
-        />
+          {...register("username", {
+            required: "username is required!",
+          })}
+        //  className="w-full p-3 border border-gray-300 rounded-lg"
+          />
+          {errors.username && (
+            <p className="text-red-500 text-sm">{errors.username.message}</p>
+          )}
 
-        <input
-          name="email"
-          type="email"
-          placeholder="Enter your email address"
-          className="w-full p-3 border rounded-lg mb-3"
-          value={formValues.email}
-          onChange={handleChange}
-        />
+        <div>
+          <input
+            name="email"
+            type="email"
+            placeholder="Enter your email"
+            {...register("email", {
+              required: "Email is required!",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
+                message: "Invalid email format!",
+              },
+            })}
+            className="w-full p-3 border border-gray-300 rounded-lg"
+          />
+          {errors.email && (
+            <p className="text-red-500 text-sm">{errors.email.message}</p>
+          )}
+        </div>
 
-        <input
-          name="password"
-          type="password"
-          placeholder="Enter your password"
-          className="w-full p-3 border rounded-lg mb-3"
-          value={formValues.password}
-          onChange={handleChange}
-        />
+        <div>
+          <input
+            name="password"
+            type="password"
+            placeholder="Enter your password"
+            {...register("password", {
+              required: "Password is required!",
+              minLength: {
+                value: 4,
+                message: "Password must be at least 4 characters",
+              },
+              maxLength: {
+                value: 10,
+                message: "Password cannot exceed 10 characters",
+              },
+            })}
+            className="w-full p-3 border border-gray-300 rounded-lg"
+          />
+          {errors.password && (
+            <p className="text-red-500 text-sm">{errors.password.message}</p>
+          )}
+        </div>
 
         <input
           name="confirmPassword"
           type="password"
           placeholder="Confirm your password"
           className="w-full p-3 border rounded-lg mb-3"
-          value={formValues.confirmPassword}
-          onChange={handleChange}
+          {...register("confirmPassword", {
+            required: "confirmPassword is required!",
+            validate: (value) =>
+              value === watch("password") || "Passwords do not match!",
+          })}
         />
+        {errors.confirmPassword && (
+            <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>
+          )}
 
         <button
+          disabled={isLoading}
           type="submit"
-          className="w-full h-10 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
+          className={`w-full h-10 text-white py-3 rounded-lg transition ${
+            isLoading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700 cursor-pointer"
+          }`}
         >
-          Sign Up
+          {isLoading ? "Loading...": "Sign Up"}
         </button>
 
         <div className="flex items-center my-6 gap-4">

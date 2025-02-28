@@ -1,190 +1,152 @@
 import React from "react";
+import { useForm } from "react-hook-form";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
+import axiosInstance from "../../config/axios";
 
-function AskQuestion() {
+function AskQuestion({ onClose }) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+
+  // const onSubmit = (data) => {
+  //   console.log("Submitted Data:", data);
+  //   alert("Question Submitted Successfully!");
+    // reset();
+  // };
+  const onSubmit = async (data) => {
+    // e.preventDefault();
+    try {
+      const response = await axiosInstance.post(`Questions/`, data);
+      // setIsLoading(true);
+      console.log("asked question: ", response.data);
+      if (response) {
+        reset();
+      }
+      // setIsLoading(false);
+      console.log("submitted question:", response )
+    } catch (error) {
+      console.log("unable to submit question",error)
+      setIsLoading(false);
+    }
+  };
   return (
     <div>
-      <div className=" h-screen">
-        <Navbar />
-        <div className="flex">
-          <aside className="w-2/12">
-            <Sidebar />
-          </aside>
-          <div
-            style={{ padding: "64px" }}
-            className="max-w-4xl mx-auto px-4  w-full py-8 flex flex-col items-center"
-          >
-            <header className="mb-6">
-              <h1 className="text-3xl font-semibold text-gray-900 text-center">
-                Ask a Question
-              </h1>
-              <p className="text-gray-600 mt-2 text-center">
-                Get answers to all your questions.
-              </p>
-            </header>
-            <br />
+      <div className="max-w-4xl mx-auto px-4 h-fit w-full py-8 flex flex-col items-center ">
+        <header className="mb-6 text-center">
+          <h1 className="text-3xl font-semibold text-gray-900">Ask a Question</h1>
+          <p className="text-gray-600 mt-2">Get answers to all your questions.</p>
+        </header>
 
-            <form className="bg-white borderh-[70%] w-[90%] flex flex-col rounded-lg p-6 space-y-6 shadow-md">
-              <div className="space-y-4">
-                <div className="flex flex-col gap-3">
-                  <select
-                    style={{ padding: "12px", margin: "12px" }}
-                    className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[90%] p-2.5"
-                  >
-                    <option className="text-gray-900" value="Option1">
-                      Field of Study
-                    </option>
-                    <option className="text-gray-900" value="Option1">
-                      Business and Management
-                    </option>
-                    <option className="text-gray-900" value="Option1">
-                      Communication
-                    </option>
-                    <option className="text-gray-900" value="Option1">
-                      Home Eco/Tourism/Hotel
-                    </option>
-                    <option className="text-gray-900" value="Option1">
-                      Engineering Technology
-                    </option>
-                    <option className="text-gray-900" value="Option1">
-                      Information/Com-Tech
-                    </option>
-                    <option className="text-gray-900" value="Option1">
-                      Medical and Biometric Sciences
-                    </option>
-                    <option className="text-gray-900" value="Option1">
-                      Education
-                    </option>
-                    <option className="text-gray-900" value="Option1">
-                      Agropastoral and Food Sciences
-                    </option>
-                  </select>
-
-                  <select
-                    style={{ padding: "12px", margin: "12px" }}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[90%] p-2.5"
-                  >
-                    <option className="text-gray-900" value="Option1">
-                      Year
-                    </option>
-                    <option className="text-gray-900" value="Option1">
-                      2024
-                    </option>
-                    <option className="text-gray-900" value="Option1">
-                      2023
-                    </option>
-                    <option className="text-gray-900" value="Option1">
-                      2022
-                    </option>
-                  </select>
-
-                  <select
-                    style={{ padding: "12px", margin: "12px" }}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[90%] p-2.5"
-                  >
-                    <option className="text-gray-900" value="Option1">
-                      Exam Type
-                    </option>
-                    <optgroup label="Semester Options">
-                      <option className="text-gray-900" value="First Semester">
-                        First Semester
-                      </option>
-                      <option className="text-gray-900" value="Second Semester">
-                        Second Semester
-                      </option>
-                    </optgroup>
-                    <optgroup label="Exam Options">
-                      <option className="text-gray-900" value="Exam">
-                        Exam
-                      </option>
-                      <option className="text-gray-900" value="CA">
-                        CA
-                      </option>
-                      <option className="text-gray-900" value="Resit">
-                        Resit
-                      </option>
-                    </optgroup>
-                  </select>
-
-                  <select
-                    style={{ padding: "12px", margin: "12px" }}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[90%] p-2.5"
-                  >
-                    <option className="text-gray-900" value="Option1">
-                      Teacher
-                    </option>
-                    <option className="text-gray-900" value="Option1">
-                      Mr. Ateh
-                    </option>
-                    <option className="text-gray-900" value="Option1">
-                      Mr. Deyou
-                    </option>
-                    <option className="text-gray-900" value="Option1">
-                      Mr. Tantoh
-                    </option>
-                    <option className="text-gray-900" value="Option1">
-                      Mr. Kuipo
-                    </option>
-                    <option className="text-gray-900" value="Option1">
-                      Mr. Kimbi
-                    </option>
-                  </select>
-
-                  <div>
-                    <p className="mt-2 text-center">
-                      If you have the Quiz as a file:
-                    </p>
-                    <label
-                      htmlFor="description"
-                      className=" text-center self-start block text-sm font-medium text-gray-700"
-                    >
-                      Description
-                    </label>
-                    <textarea
-                      style={{ padding: "12px", margin: "12px" }}
-                      id="description"
-                      name="description"
-                      rows="6"
-                      className="mt-1 block w-[90%] border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      placeholder="Explain in detail what you are trying to achieve or what issue you are facing."
-                    ></textarea>
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="file"
-                      className="self-start block text-sm font-medium text-gray-700"
-                    >
-                      File Upload
-                    </label>
-                  </div>
-                </div>
-                <br />
-              </div>
-
-              <div
-                style={{ padding: "12px", margin: "12px" }}
-                className="flex justify-between mt-6 space-x-4"
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="bg-white w-[90%] rounded-lg p-6 space-y-6 shadow-md"
+        >
+          <div className="flex flex-row gap-3 w-full">
+            <div className="w-1/2">
+              <select
+                {...register("fieldOfStudy", { required: "Field of study is required" })}
+                className="w-full p-3 border rounded-lg"
               >
-                <button
-                  onClick={onclose}
-                  type="button"
-                  className=" w-20 h-10 bg-red-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="w-30 h-10 bg-blue-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                  Submit Question
-                </button>
-              </div>
-              <br />
-            </form>
+                <option value="">Select Field of Study</option>
+                {["Business and Management", "Communication", "Home Eco/Tourism/Hotel", "Engineering Technology", "Information/Com-Tech", "Medical and Biometric sciences", "Education", "Agropastoral and Food Sciences"].map((item) => (
+                  <option key={item} value={item}>{item}</option>
+                ))}
+              </select>
+              {errors.fieldOfStudy && <p className="text-red-500 text-sm">{errors.fieldOfStudy.message}</p>}
+            </div>
+
+            <div className="w-1/2">
+              <select
+                {...register("year", { required: "Year is required" })}
+                className="w-full p-3 border rounded-lg"
+              >
+                <option value="">Select Year</option>
+                {["2025", "2024", "2023", "2022", "2021", "2020"].map((item) => (
+                  <option key={item} value={item}>{item}</option>
+                ))}
+              </select>
+              {errors.year && <p className="text-red-500 text-sm">{errors.year.message}</p>}
+            </div>
           </div>
-        </div>
+
+          <div className="flex flex-row gap-3 w-full">
+            <div className="w-1/2">
+              <select
+                {...register("examType", { required: "Exam type is required" })}
+                className="w-full p-3 border rounded-lg"
+              >
+                <option value="">Select Exam Type</option>
+                <optgroup label="Semester">
+                  <option value="First Semester">First Semester</option>
+                  <option value="Second Semester">Second Semester</option>
+                </optgroup>
+                <optgroup label="Exam Type">
+                  <option value="Exam">Exam</option>
+                  <option value="CA">CA</option>
+                  <option value="Resit">Resit</option>
+                </optgroup>
+              </select>
+              {errors.examType && <p className="text-red-500 text-sm">{errors.examType.message}</p>}
+            </div>
+
+            <div className="w-1/2">
+              <select
+                {...register("teacher", { required: "Teacher selection is required" })}
+                className="w-full p-3 border rounded-lg"
+              >
+                <option value="">Select Teacher</option>
+                {["Mr. Tantoh", "Mr. Deyou", "Mr. Kimbi", "Mr. Kuipo", "Mr. Ateh"].map((item) => (
+                  <option key={item} value={item}>{item}</option>
+                ))}
+              </select>
+              {errors.teacher && <p className="text-red-500 text-sm">{errors.teacher.message}</p>}
+            </div>
+          </div>
+
+          <textarea
+            {...register("description", {
+              required: "Description is required",
+              minLength: { value: 10, message: "Description must be at least 10 characters" },
+            })}
+            rows="5"
+            className="w-full p-3 border rounded-lg"
+            placeholder="Explain your question in detail."
+          ></textarea>
+          {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
+
+          <label className="w-full h-[100px] flex items-center justify-center border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50" 
+                {...register("teacher", { required: "file selection is required" })}
+                >
+            {/* <FaUpload size={24} className="text-gray-500"/> */}
+            <i className="pi pi-upload"></i>
+            <input type="file" hidden />
+            {errors.teacher && <p className="text-red-500 text-sm">{errors.teacher.message}</p>}
+          </label>
+
+          <div className="flex justify-between mt-6 space-x-4">
+            <button
+              type="button"
+              onClick={() => {
+                reset();
+                if (onClose) onClose();
+              }}
+              className="w-20 h-10 bg-red-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-red-700"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              className="w-30 h-10 bg-blue-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700"
+            >
+              Submit Question
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

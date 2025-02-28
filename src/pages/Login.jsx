@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-
-import { InputText } from "primereact/inputtext";
-import { FloatLabel } from "primereact/floatlabel";
+import React from "react";
+import { useForm } from "react-hook-form";
+import axiosInstance from "../config/axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Login({ openSignUp, closeLoginModal }) {
   const handleSignUpClick = () => {
@@ -10,88 +10,78 @@ function Login({ openSignUp, closeLoginModal }) {
     openSignUp(true);
   };
 
-  const initialValues = { email: "", password: "" };
-  const [formValues, setFormValues] = useState(initialValues);
-  const [formErrors, setFormErrors] = useState({});
-  const [isSubmit, setIsSubmit] = useState(false);
+  const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const errors = validate(formValues);
-    setFormErrors(errors);
-    if (Object.keys(errors).length === 0) {
-      setIsSubmit(true);
+  const onSubmit = async (data) => {
+    try {
+      const res = await axiosInstance.get("Users/");
+      const users = res.data;
+
+      const foundUser = users.find((user) => user.email === data.email && user.password === data.password);
+      if (foundUser) {
+        console.log("user found:", foundUser);
+        toast.success("Login Successful")
+        // window.location.href = '/';
+        navigate('/');
+      }else{
+        toast.error("email or password are incorrect.")
+      }
+    } catch (error) {
+      console.log("Login error", error);
     }
-  };
-
-  useEffect(() => {
-    if (Object.keys(formErrors).length === 0 && isSubmit) {
-      // Handle successful login (e.g., API call)
-    }
-  }, [formErrors, isSubmit]);
-
-  const validate = (values) => {
-    const errors = {};
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-    if (!values.email) {
-      errors.email = "Email is required!";
-    } else if (!regex.test(values.email)) {
-      errors.email = "This is not a valid email!";
-    }
-    if (!values.password) {
-      errors.password = "Password is required!";
-    } else if (values.password.length < 4) {
-      errors.password = "Password must be more than 4 characters";
-    } else if (values.password.length > 10) {
-      errors.password = "Password cannot exceed more than 10 characters";
-    }
-    return errors;
   };
 
   return (
     <div className="flex flex-col gap-12 p-6 rounded-lg w-full">
-      {/* {Object.keys(formErrors).length === 0 && isSubmit ? (
-        <div className="ui message success">Login successful</div>
-      ) : (
-        <pre>{JSON.stringify(formValues, null, 2)}</pre>
-      )} */}
-
-      <form onSubmit={handleSubmit} className=" flex flex-col gap-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
         <div className="text-center mb-6">
           <h2 className="text-2xl font-semibold text-gray-700">Sign In</h2>
           <hr className="mt-2 border-gray-300" />
         </div>
 
-        {Object.values(formErrors).map((error, index) => (
-          <p key={index} className="text-red-500 text-sm">
-            {error}
-          </p>
-        ))}
+        <div>
+          <input
+            name="email"
+            type="email"
+            placeholder="Enter your email"
+            {...register("email", {
+              required: "Email is required!",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
+                message: "Invalid email format!",
+              },
+            })}
+            className="w-full p-3 border border-gray-300 rounded-lg"
+          />
+          {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+        </div>
 
-        <input
-          name="email"
-          type="email"
-          placeholder="Enter your email"
-          className="w-full p-3 border border-gray-500 rounded-lg mb-3"
-          value={formValues.email}
-          onChange={handleChange}
-        />
-
-        <input
-          name="password"
-          type="password"
-          placeholder="Enter your password"
-          className="w-full p-3 border border-gray-500 rounded-lg mb-3"
-          // style={{ width: "100%", padding: "8px", borderRadius: "8px" }}
-          value={formValues.password}
-          onChange={handleChange}
-        />
+        <div>
+          <input
+            name="password"
+            type="password"
+            placeholder="Enter your password"
+            {...register("password", {
+              required: "Password is required!",
+              minLength: {
+                value: 4,
+                message: "Password must be at least 4 characters",
+              },
+              maxLength: {
+                value: 10,
+                message: "Password cannot exceed 10 characters",
+              },
+            })}
+            className="w-full p-3 border border-gray-300 rounded-lg"
+          />
+          {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+        </div>
 
         <button
           type="submit"

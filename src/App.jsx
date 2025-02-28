@@ -1,13 +1,12 @@
 import React from 'react'
 import {useState} from 'react'
+import { ToastContainer, toast } from 'react-toastify';
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import QuestionList from './pages/questions/QuestionList'
 import Home from './pages/Home.jsx'
 import Sidebar from './pages/Sidebar.jsx'
 import Navbar from './pages/Navbar.jsx'
-import Tags from './pages/Tags.jsx'
-import Users from './pages/Users.jsx'
 import Login from './pages/Login.jsx'
 import SignUp from './pages/SignUp.jsx'
 import LandingPage from './pages/LandingPage.jsx'
@@ -27,8 +26,6 @@ function App() {
       <Route path='/' element={<Home/>}/>
       <Route path='/side' element={<Sidebar/>}/>
       <Route path='/nav' element={<Navbar/>}/>
-      <Route path='/tag' element={<Tags/>}/>
-      <Route path='/user' element={<Users/>}/>
       <Route path='/login' element={<Login/>}/>
       <Route path='/signup' element={<SignUp/>}/>
       <Route path='/land' element={<LandingPage/>}/>
@@ -38,6 +35,7 @@ function App() {
       <Route path='/footer' element={<Footer/>}/>
       <Route path='questions' element={<QuestionList/>}/>
     </Routes>
+    <ToastContainer />
     </Router> 
   )
 }

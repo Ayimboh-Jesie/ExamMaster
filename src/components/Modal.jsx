@@ -8,7 +8,7 @@ export default function Modal({ open, onClose, children }) {
       <div
         onClick={(e) => e.stopPropagation()}
         style={{padding:'6px'}}
-        className={`w-[90%] md:w-1/3 lg:w-1/3 h-fit overflow-y-scroll px-12 bg-white rounded-xl shawdow-lg p-24 transition-all
+        className={`w-[90%] md:w-1/3 lg:w-1/3 h-[90%] py-12 overflow-auto  px-12 bg-white rounded-xl shawdow-lg p-24 transition-all
             ${open ? "scale-100 opacity-100" : "scale-125 opacity-0"}`}
       >
         <button
