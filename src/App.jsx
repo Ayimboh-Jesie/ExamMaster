@@ -14,6 +14,8 @@ import About from './pages/About.jsx'
 import Services from './pages/Services.jsx'
 import Footer from './pages/Footer.jsx'
 import AskQuestion from './pages/questions/AskQuestion.jsx'
+import Dashboard from './pages/dashboard/Home';
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 
@@ -34,6 +36,14 @@ function App() {
       <Route path='/askques' element={<AskQuestion/>}/>
       <Route path='/footer' element={<Footer/>}/>
       <Route path='questions' element={<QuestionList/>}/>
+       <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
     </Routes>
     <ToastContainer />
     </Router> 

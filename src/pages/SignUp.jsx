@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useForm } from "react-hook-form";
 import axiosInstance from "../config/axios";
+import {toast} from 'react-toastify';
+import {ModalContext} from "../context/ModalContext";
 
-function SignUp({ openLogin, closeSignupModal }) {
+function SignUp() {
+
+    const {closeSignUpModal, setIsLoginOpen} = useContext(ModalContext);
   const [isLoading, setIsLoading] = useState(false);
   const handleLoginClick = () => {
+      console.log("opening login form and closing signup form");
+    setIsLoginOpen(true);
     closeSignUpModal(false);
-    openLogin(true);
   };
 
   const {
@@ -18,17 +23,19 @@ function SignUp({ openLogin, closeSignupModal }) {
   } = useForm();
 
   const onSubmit = async (data) => {
-    // e.preventDefault();
     try {
-      const response = await axiosInstance.post(`Users/`, data);
+      const response = await axiosInstance.post(`users/register`, data);
       setIsLoading(true);
       if (response) {
         reset();
+        handleLoginClick();
+        toast.success("account created successfully");
       }
       setIsLoading(false);
       console.log("registered user:", response )
     } catch (error) {
-      console.log("unable to creaete user",error)
+      console.log("unable to create user",error);
+      toast.error("something went wrong while creating your account", error);
       setIsLoading(false);
     }
   };
@@ -40,17 +47,17 @@ function SignUp({ openLogin, closeSignupModal }) {
           <hr className="mt-2 border-gray-300" />
         </div>
         <input
-          name="username"
+          name="name"
           type="text"
           placeholder="Enter your username"
           className="w-full p-3 border rounded-lg mb-3"
-          {...register("username", {
+          {...register("name", {
             required: "username is required!",
           })}
         //  className="w-full p-3 border border-gray-300 rounded-lg"
           />
-          {errors.username && (
-            <p className="text-red-500 text-sm">{errors.username.message}</p>
+          {errors.name && (
+            <p className="text-red-500 text-sm">{errors.name.message}</p>
           )}
 
         <div>
@@ -132,14 +139,14 @@ function SignUp({ openLogin, closeSignupModal }) {
           <i className="pi pi-google"></i> Sign up with Google
         </button>
 
-        <div className="text-center mt-4">
+        <div className="flex justify-center items-center text-center mt-4">
           <span className="text-sm">Already have an account?</span>
-          <button
+          <div
             onClick={handleLoginClick}
             className="ml-2 text-blue-500 font-semibold hover:underline"
           >
             Login
-          </button>
+          </div>
         </div>
       </form>
     </div>

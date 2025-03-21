@@ -1,7 +1,5 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import Sidebar from "../Sidebar";
-import Navbar from "../Navbar";
 import axiosInstance from "../../config/axios";
 
 function AskQuestion({ onClose }) {
@@ -12,30 +10,37 @@ function AskQuestion({ onClose }) {
     formState: { errors },
   } = useForm();
 
-  // const onSubmit = (data) => {
-  //   console.log("Submitted Data:", data);
-  //   alert("Question Submitted Successfully!");
-    // reset();
-  // };
+ 
   const onSubmit = async (data) => {
-    // e.preventDefault();
     try {
       const response = await axiosInstance.post(`Questions/`, data);
-      // setIsLoading(true);
       console.log("asked question: ", response.data);
       if (response) {
         reset();
       }
-      // setIsLoading(false);
       console.log("submitted question:", response )
     } catch (error) {
       console.log("unable to submit question",error)
       setIsLoading(false);
     }
   };
+
+  const [filePreview, setFilePreview] = React.useState(null);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFilePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div>
-      <div className="max-w-4xl mx-auto px-4 h-fit w-full py-8 flex flex-col items-center ">
+      <div className="max-w-4xl px-4 h-fit w-full py-8 flex flex-col items-center ">
         <header className="mb-6 text-center">
           <h1 className="text-3xl font-semibold text-gray-900">Ask a Question</h1>
           <p className="text-gray-600 mt-2">Get answers to all your questions.</p>
@@ -43,7 +48,7 @@ function AskQuestion({ onClose }) {
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="bg-white w-[90%] rounded-lg p-6 space-y-6 shadow-md"
+          className="bg-white space-y-3"
         >
           <div className="flex flex-row gap-3 w-full">
             <div className="w-1/2">
@@ -107,6 +112,16 @@ function AskQuestion({ onClose }) {
             </div>
           </div>
 
+          <div>
+            <input placeholder="what is your question" className="w-full rounded-lg p-3 border"
+                {...register("title", {
+                    required: "Title can't be empty",
+                    minLength: { value:20, message:"title should not be more than 20 characters"}
+                })}
+            />
+            {errors.title && <p className="text-red-500 text-sm"> {errors.title}</p>}
+          </div>
+
           <textarea
             {...register("description", {
               required: "Description is required",
@@ -119,12 +134,10 @@ function AskQuestion({ onClose }) {
           {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
 
           <label className="w-full h-[100px] flex items-center justify-center border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50" 
-                {...register("teacher", { required: "file selection is required" })}
+                {...register("file", { required: "file selection is required" })}
                 >
-            {/* <FaUpload size={24} className="text-gray-500"/> */}
             <i className="pi pi-upload"></i>
-            <input type="file" hidden />
-            {errors.teacher && <p className="text-red-500 text-sm">{errors.teacher.message}</p>}
+            <input type="file"  />
           </label>
 
           <div className="flex justify-between mt-6 space-x-4">

@@ -4,12 +4,14 @@ import "primeicons/primeicons.css";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import QuestionList from "./questions/QuestionList";
+import {ModalProvider} from "../context/ModalContext";
 function Home() {
   return (
-    <div className=" h-screen oversflow-y-none">
+  <ModalProvider>
+    <div className=" h-screen overflow-y-hidden">
         <Navbar />
         <hr />
-      <div className="flex px-24 h-screen ">
+      <div className="flex px-16 h-screen ">
       <aside className="w-2/12">
         <Sidebar />
       </aside>
@@ -19,6 +21,7 @@ function Home() {
         </main>
       </div>
     </div>
+  </ModalProvider>
   );
 }
 
