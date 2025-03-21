@@ -43,7 +43,7 @@ function Navbar() {
               {
                 isAuthenticated() ? (
                     <button onClick={() => setOpenDropDown(!openDropDown)} className="flex justify-center items-center text-xl uppercase text-white rounded-full bg-green-600 w-12 h-12 cursor-pointer">
-                        {user?.name.substring(0, 2)}
+                        {user?.name?.substring(0, 2)}
                     </button>
                 ):(
                     <>

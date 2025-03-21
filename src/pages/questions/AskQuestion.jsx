@@ -151,7 +151,7 @@ function AskQuestion({ onClose }) {
           ></textarea>
           {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
 
-          <label className="w-full h-[100px] flex items-center justify-center border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50" 
+          <label className="w-full h-[100px] flex items-center justify-center border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50"
                 {...register("file")}
                 >
             <i className="pi pi-upload"></i>
