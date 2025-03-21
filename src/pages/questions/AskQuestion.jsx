@@ -1,8 +1,7 @@
-import React from "react";
+import React, {useState} from "react";
 import { useForm } from "react-hook-form";
-import Sidebar from "../Sidebar";
-import Navbar from "../Navbar";
 import axiosInstance from "../../config/axios";
+import {useAuth} from "../../context/AuthContext";
 
 function AskQuestion({ onClose }) {
   const {
@@ -12,30 +11,54 @@ function AskQuestion({ onClose }) {
     formState: { errors },
   } = useForm();
 
-  // const onSubmit = (data) => {
-  //   console.log("Submitted Data:", data);
-  //   alert("Question Submitted Successfully!");
-    // reset();
-  // };
+  const [isLoading, setIsLoading] = useState(false);
+
+  const {token, user} = useAuth();
+
   const onSubmit = async (data) => {
-    // e.preventDefault();
+      console.log("token from useAuth", token);
+      console.log("question data: ", data);
+      console.log("auth user id: ", user._id);
     try {
-      const response = await axiosInstance.post(`Questions/`, data);
-      // setIsLoading(true);
+        setIsLoading(true)
+        const questionData = {
+          ...data,
+          askedBy: user._id,
+        };
+      const response = await axiosInstance.post(`Questions/`, questionData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }});
+
       console.log("asked question: ", response.data);
       if (response) {
+          setIsLoading(false)
         reset();
+        onClose();
+        window.location.href = "/";
       }
-      // setIsLoading(false);
       console.log("submitted question:", response )
     } catch (error) {
       console.log("unable to submit question",error)
-      setIsLoading(false);
+    }finally{ setIsLoading(false);}
+  };
+
+  const [filePreview, setFilePreview] = React.useState(null);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFilePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
+
   return (
     <div>
-      <div className="max-w-4xl mx-auto px-4 h-fit w-full py-8 flex flex-col items-center ">
+      <div className="max-w-4xl px-4 h-fit w-full py-8 flex flex-col items-center ">
         <header className="mb-6 text-center">
           <h1 className="text-3xl font-semibold text-gray-900">Ask a Question</h1>
           <p className="text-gray-600 mt-2">Get answers to all your questions.</p>
@@ -43,12 +66,12 @@ function AskQuestion({ onClose }) {
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="bg-white w-[90%] rounded-lg p-6 space-y-6 shadow-md"
+          className="bg-white space-y-3"
         >
           <div className="flex flex-row gap-3 w-full">
             <div className="w-1/2">
               <select
-                {...register("fieldOfStudy", { required: "Field of study is required" })}
+                {...register("study_field", { required: "Field of study is required" })}
                 className="w-full p-3 border rounded-lg"
               >
                 <option value="">Select Field of Study</option>
@@ -56,7 +79,7 @@ function AskQuestion({ onClose }) {
                   <option key={item} value={item}>{item}</option>
                 ))}
               </select>
-              {errors.fieldOfStudy && <p className="text-red-500 text-sm">{errors.fieldOfStudy.message}</p>}
+              {errors.study_field && <p className="text-red-500 text-sm">{errors.study_field.message}</p>}
             </div>
 
             <div className="w-1/2">
@@ -76,13 +99,13 @@ function AskQuestion({ onClose }) {
           <div className="flex flex-row gap-3 w-full">
             <div className="w-1/2">
               <select
-                {...register("examType", { required: "Exam type is required" })}
+                {...register("exam_type", { required: "Exam type is required" })}
                 className="w-full p-3 border rounded-lg"
               >
                 <option value="">Select Exam Type</option>
                 <optgroup label="Semester">
-                  <option value="First Semester">First Semester</option>
-                  <option value="Second Semester">Second Semester</option>
+                  <option value="First semester">First Semester</option>
+                  <option value="Second semester">Second Semester</option>
                 </optgroup>
                 <optgroup label="Exam Type">
                   <option value="Exam">Exam</option>
@@ -90,12 +113,12 @@ function AskQuestion({ onClose }) {
                   <option value="Resit">Resit</option>
                 </optgroup>
               </select>
-              {errors.examType && <p className="text-red-500 text-sm">{errors.examType.message}</p>}
+              {errors.exam_type && <p className="text-red-500 text-sm">{errors.exam_type.message}</p>}
             </div>
 
             <div className="w-1/2">
               <select
-                {...register("teacher", { required: "Teacher selection is required" })}
+                {...register("examiner", { required: "Teacher selection is required" })}
                 className="w-full p-3 border rounded-lg"
               >
                 <option value="">Select Teacher</option>
@@ -103,8 +126,18 @@ function AskQuestion({ onClose }) {
                   <option key={item} value={item}>{item}</option>
                 ))}
               </select>
-              {errors.teacher && <p className="text-red-500 text-sm">{errors.teacher.message}</p>}
+              {errors.examiner && <p className="text-red-500 text-sm">{errors.examiner.message}</p>}
             </div>
+          </div>
+
+          <div>
+            <input placeholder="what is your question" className="w-full rounded-lg p-3 border"
+                {...register("title", {
+                    required: "Title can't be empty",
+                    minLength: { value:20, message:"title should not be more than 20 characters"}
+                })}
+            />
+            {errors.title && <p className="text-red-500 text-sm"> {errors.title}</p>}
           </div>
 
           <textarea
@@ -119,12 +152,10 @@ function AskQuestion({ onClose }) {
           {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
 
           <label className="w-full h-[100px] flex items-center justify-center border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50" 
-                {...register("teacher", { required: "file selection is required" })}
+                {...register("file")}
                 >
-            {/* <FaUpload size={24} className="text-gray-500"/> */}
             <i className="pi pi-upload"></i>
-            <input type="file" hidden />
-            {errors.teacher && <p className="text-red-500 text-sm">{errors.teacher.message}</p>}
+            <input type="file"  />
           </label>
 
           <div className="flex justify-between mt-6 space-x-4">
@@ -140,10 +171,11 @@ function AskQuestion({ onClose }) {
             </button>
 
             <button
+              disabled={isLoading}
               type="submit"
               className="w-30 h-10 bg-blue-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700"
             >
-              Submit Question
+              {isLoading ? "Loading..." : "Submit Question"}
             </button>
           </div>
         </form>

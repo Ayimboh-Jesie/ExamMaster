@@ -1,16 +1,22 @@
-import React from "react";
+import React, {useContext} from "react";
+import {useLocation} from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axiosInstance from "../config/axios";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import {useAuth} from "../context/AuthContext";
+import {ModalContext} from "../context/ModalContext";
+import Modal from "../components/Modal";
 
-function Login({ openSignUp, closeLoginModal }) {
+function Login({ openSignUp }) {
+  const {login, isLoading} = useAuth();
+  const { isLoginOpen, closeLoginModal, openSignUpModal, setIsSignUpOpen } = useContext(ModalContext);
+
+  const location = useLocation();
+
   const handleSignUpClick = () => {
-    closeLoginModal(false);
-    openSignUp(true);
+    closeLoginModal();
+    setIsSignUpOpen(true);
   };
-
-  const navigate = useNavigate();
 
   const {
     register,
@@ -18,24 +24,20 @@ function Login({ openSignUp, closeLoginModal }) {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = async (data) => {
+  const onSubmit = async ( data) => {
     try {
-      const res = await axiosInstance.get("Users/");
-      const users = res.data;
-
-      const foundUser = users.find((user) => user.email === data.email && user.password === data.password);
-      if (foundUser) {
-        console.log("user found:", foundUser);
-        toast.success("Login Successful")
-        // window.location.href = '/';
-        navigate('/');
-      }else{
-        toast.error("email or password are incorrect.")
-      }
-    } catch (error) {
-      console.log("Login error", error);
-    }
+         const res = await login(data);
+         if (res.status === 200) {
+           toast.success("Login Successful");
+           closeLoginModal();;
+         }
+       } catch (error) {
+         console.log("Login error", error);
+         toast.error("Email or password is incorrect.");
+       }
   };
+
+  if (!isLoginOpen) return null;
 
   return (
     <div className="flex flex-col gap-12 p-6 rounded-lg w-full">
@@ -84,10 +86,11 @@ function Login({ openSignUp, closeLoginModal }) {
         </div>
 
         <button
+          disabled={isLoading}
           type="submit"
           className="w-full h-10 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
         >
-          Sign In
+          {isLoading ? "Logging in..." : "Login"}
         </button>
 
         <div className="flex items-center my-6 gap-4">
