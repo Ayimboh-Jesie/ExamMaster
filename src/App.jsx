@@ -16,6 +16,7 @@ import Footer from './pages/Footer.jsx'
 import AskQuestion from './pages/questions/AskQuestion.jsx'
 import Dashboard from './pages/dashboard/Home';
 import QuestionDetails from './pages/questions/QuestionDetails';
+import Answer from './components/Answer.jsx';
 import ProtectedRoute from "./components/ProtectedRoute";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 
@@ -30,6 +31,7 @@ function App() {
         <Route path='question/:questionId' element={<QuestionDetails/>}/>
       </Route>
       <Route path='/login' element={<Login/>}/>
+      <Route path='/ans' element={<Answer/>}/>
       <Route path='/signup' element={<SignUp/>}/>
       <Route path='/land' element={<LandingPage/>}/>
       <Route path='/abt' element={<About/>}/>
