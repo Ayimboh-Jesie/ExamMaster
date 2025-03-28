@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import { Questions } from "../../constants/Questions";
 import Question from "../../components/Question";
 import axiosInstance from "../../config/axios";
+import Home from "../Home";
 
 function QuestionList() {
 

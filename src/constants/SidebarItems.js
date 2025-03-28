@@ -20,19 +20,19 @@ export const SidebarItems = [
   {
     id: 4,
     label: "Save",
-    path: "/",
+    path: "/saved",
     icon: "pi pi-save",
   },
   {
     id: 5,
     label: "User",
-    path: "/",
+    path: "/users",
     icon: "pi pi-user",
   },
   {
     id: 6,
     label: "Discussions",
-    path: "/",
+    path: "/discussions",
     icon: "pi pi-envelope",
   },
 ];
