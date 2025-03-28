@@ -15,8 +15,9 @@ import Services from './pages/Services.jsx'
 import Footer from './pages/Footer.jsx'
 import AskQuestion from './pages/questions/AskQuestion.jsx'
 import Dashboard from './pages/dashboard/Home';
+import QuestionDetails from './pages/questions/QuestionDetails';
+import Answer from './components/Answer.jsx';
 import ProtectedRoute from "./components/ProtectedRoute";
-
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 
         
@@ -25,17 +26,18 @@ function App() {
   return (
    <Router>
     <Routes>
-      <Route path='/' element={<Home/>}/>
-      <Route path='/side' element={<Sidebar/>}/>
-      <Route path='/nav' element={<Navbar/>}/>
+      <Route path='/' element={<Home/>}>
+        <Route path='questions' element={<QuestionList/>}/>
+        <Route path='question/:questionId' element={<QuestionDetails/>}/>
+      </Route>
       <Route path='/login' element={<Login/>}/>
+      <Route path='/ans' element={<Answer/>}/>
       <Route path='/signup' element={<SignUp/>}/>
       <Route path='/land' element={<LandingPage/>}/>
       <Route path='/abt' element={<About/>}/>
       <Route path='/service' element={<Services/>}/>
       <Route path='/askques' element={<AskQuestion/>}/>
       <Route path='/footer' element={<Footer/>}/>
-      <Route path='questions' element={<QuestionList/>}/>
        <Route
                 path="/dashboard"
                 element={

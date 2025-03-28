@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import "primeicons/primeicons.css";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
@@ -17,7 +17,7 @@ function Home() {
       </aside>
 
         <main className="w-full px-12 overflow-y-scroll">
-          <QuestionList />
+         <Outlet/>
         </main>
       </div>
     </div>

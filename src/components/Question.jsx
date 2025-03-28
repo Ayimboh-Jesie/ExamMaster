@@ -1,4 +1,5 @@
 import React from "react";
+import {Link} from "react-router-dom";
 
 function Question({ question }) {
     const truncateText = (text, maxLength) => {
@@ -18,9 +19,9 @@ function Question({ question }) {
             <p className="text-black">{question?.views} views</p>
           </div>
           <div className="mt-4 w-5/6">
-            <p className="font-semibold text-blue-600 hover:underline cursor-pointer">
+            <Link to={`/question/${question._id}`} className="font-semibold text-blue-600 hover:underline cursor-pointer">
               {truncateText(question?.title, 50)}
-            </p>
+            </Link>
             <p className="text-gray-700 mt-2 text-left text-base/6">
             {truncateText(question?.description, 50)}
             </p>
