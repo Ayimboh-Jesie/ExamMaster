@@ -3,6 +3,9 @@ import { useParams } from "react-router-dom";
 import axiosInstance from "../../config/axios";
 import {useForm} from "react-hook-form";
 import {useAuth} from "../../context/AuthContext";
+import { toast } from "react-toastify";
+import Modal from "../../components/Modal";
+import Comment from "../../components/Comment";
 
 const QuestionDetails = () => {
   const { questionId } = useParams();
@@ -11,6 +14,8 @@ const QuestionDetails = () => {
   const [loading, setLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [openComment, setOpenComment] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
 
   const {token, user} = useAuth();
 
@@ -40,9 +45,11 @@ const QuestionDetails = () => {
             setIsLoading(false);
             reset();
             fetchQuestionDetails();
+            toast.success("You have answered a question successfully!");
        } catch(err){
              console.log("Error answering question", err.response?.data || err.message);
              throw err;
+             toast.error("Something went wrong please try again");
        }finally{
             setIsLoading(false);
        }
@@ -64,9 +71,60 @@ const QuestionDetails = () => {
     fetchQuestionDetails();
   }, [questionId]);
 
+const handleLikeAction = async (answerId, action) => {
+  try {
+    const endpoint = action === 'like'
+      ? `/answers/${answerId}/like`
+      : `/answers/${answerId}/like`;
+
+      console.log("token in like:", token);
+
+    const method = action === 'like' ? 'post' : 'delete';
+
+    const response = await axiosInstance[method](endpoint, {}, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    setData(prevData => ({
+      ...prevData,
+      answers: prevData.answers.map(answer => {
+        if (answer._id === answerId) {
+          const currentLikes = Array.isArray(answer.likes) ? answer.likes : [];
+
+          return {
+            ...answer,
+            likes: action === 'like'
+              ? [...currentLikes, response.data] // Add new like
+              : currentLikes.filter(like =>
+                  (like.user?._id || like.user).toString() !== user._id.toString()
+                )
+          };
+        }
+        return answer;
+      })
+    }));
+
+    toast.success(action === 'like' ? "Answer liked!" : "Answer unliked!");
+  } catch (error) {
+    console.error("Error:", error);
+    if (error.response?.status === 400) {
+      toast.warning(action === 'like'
+        ? "You already liked this answer!"
+        : "Like not found");
+    } else {
+      toast.error("Action failed. Please try again.");
+    }
+  }
+};
+
   return (
     <>
-      {loading ? (<p className="w-full h-full flex justify-center items-center text-2xl text-blue-700">Fetching data...</p>) : (
+      {loading ? (
+          <div className="w-full h-full flex flex-col gap-2 justify-center items-center">
+              <i className="pi pi-spin pi-spinner" style={{ fontSize: '2rem' }}></i>
+              <p> Loading...</p>
+          </div>
+          ) : (
         <div className="px-12 my-12">
             <h2 className="text-2xl my-3">{data?.title}</h2>
             <div className="flex gap-12 text-sm text-gray-400">
@@ -87,7 +145,8 @@ const QuestionDetails = () => {
               <div className="mt-5">
                 <div>
                   {data?.answers?.length > 0 ? (
-                    data?.answers?.map((answer) => (
+                    data?.answers?.map((answer) => {
+                      return(
                       <div key={answer._id} className="bg-white shadow-md rounded-lg p-4 my-5">
                         <div className="flex items-center gap-8 ">
                           <div className="w-12 h-12 flex justify-center items-center bg-blue-700 text-white rounded-full uppercase">
@@ -102,19 +161,32 @@ const QuestionDetails = () => {
                           </div>
                         </div>
                         <div className="flex gap-12 items-center">
-                          <div className="flex gap-6 items-center">
-                            <div className="flex items-center justify-between px-5 gap-8 p-2 w-48 rounded-2xl bg-gray-200">
-                              <p className="border-r-gray-500 w-5/6 border">
-                                Upvote
-                              </p>
-                              <p>Down</p>
+                          <div className="flex gap-12 items-center">
+                            <div className="flex items-center justify-between px-5 gap-8 p-2 w-48">
+                                <button
+                                  onClick={() => handleLikeAction(answer._id, 'like')}
+                                  className="px-2 text-gray-400 hover:text-gray-700"
+                                >
+                                  <i className="pi pi-thumbs-up text-xl"></i>
+                                </button>
+                                    <span className="ml-2">{answer.likes?.length || 0}</span>
+
+                                {/* Unlike Button - Always enabled */}
+                                <button
+                                  onClick={() => handleLikeAction(answer._id, 'unlike')}
+                                  className="px-2  text-gray-400 hover:text-gray-700"
+                                >
+                                   <i className="pi pi-thumbs-down text-xl"></i>
+                                </button>
                             </div>
-                            <p>comment</p>
-                            <p>share</p>
+                            <button onClick={() =>{setSelectedAnswer(answer); setOpenComment(true)} }>
+                                <i className="pi pi-comments text-xl text-gray-400 hover:text-gray-700"></i>
+                            </button>
+                            <i className="pi pi-share-alt text-xl text-gray-400 hover:text-gray-700"></i>
                           </div>
                         </div>
-                      </div>
-                    ))
+                      </div>)
+                    })
                   ) : (
                     <p>No answers yet. Be the first to answer!</p>
                   )}
@@ -129,13 +201,7 @@ const QuestionDetails = () => {
                    {...register("title", {required: "answer title can't be empty"})}
                    className="w-[70%] h-[50%] border p-8 my-4">
 
-                 </textarea> {errors.detail && <p className="text-red-500 text-sm">{errors.detail.message}</p>}
-                  <textarea
-                    placeholder="give a better description to your answer"
-                    {...register("detail", {required: "answer detail can't be empty"})}
-                    className="w-[70%] h-[50%] border p-8 my-4">
-
-                  </textarea>
+                 </textarea>
                 <button onClick={handleSubmit(answerQuestion)} className="bg-blue-500 rounded-lg text-white w-[20%] h-[12%] p-3 mb-24">
                   Post Your Answer
                 </button>
@@ -143,6 +209,11 @@ const QuestionDetails = () => {
           </div>
       )}
 
+        {openComment &&
+            <Modal open={openComment} onClose={() => setOpenComment(false)}>
+                <Comment answer={selectedAnswer} onClose={()=>setOpenComment(false)}/>
+            </Modal>
+        }
     </>
   );
 };

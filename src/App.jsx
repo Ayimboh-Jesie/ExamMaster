@@ -4,6 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import QuestionList from './pages/questions/QuestionList'
+import Layout from './pages/Layout.jsx'
 import Home from './pages/Home.jsx'
 import Sidebar from './pages/Sidebar.jsx'
 import Navbar from './pages/Navbar.jsx'
@@ -19,15 +20,20 @@ import QuestionDetails from './pages/questions/QuestionDetails';
 import Answer from './components/Answer.jsx';
 import ProtectedRoute from "./components/ProtectedRoute";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
+import {QuestionsProvider} from "./context/QuestionsContext";
+import 'primeicons/primeicons.css';
+
 
         
 
 function App() {
   return (
+      <QuestionsProvider>
    <Router>
     <Routes>
-      <Route path='/' element={<Home/>}>
+      <Route path='/' element={<Layout/>}>
         <Route path='questions' element={<QuestionList/>}/>
+        <Route path='home' element={<Home/>}/>
         <Route path='question/:questionId' element={<QuestionDetails/>}/>
       </Route>
       <Route path='/login' element={<Login/>}/>
@@ -48,7 +54,8 @@ function App() {
               />
     </Routes>
     <ToastContainer />
-    </Router> 
+    </Router>
+    </QuestionsProvider>
   )
 }
 

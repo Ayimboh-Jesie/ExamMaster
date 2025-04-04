@@ -2,7 +2,7 @@ export const SidebarItems = [
   {
     id: 1,
     label: "Home",
-    path: "/",
+    path: "/home",
     icon: "pi pi-home",
   },
   {

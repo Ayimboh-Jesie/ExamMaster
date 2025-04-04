@@ -19,9 +19,9 @@ function Navbar() {
     <>
       <div className="border-b border-gray-300">
         <div className="w-full flex justify-between items-center px-24 my-4">
-          <img src="jess.png" alt="logo" className="w-[3%] h-[5%] rounded-full" />
+          <img src="/jess.png" alt="logo" className="w-[3%] h-[5%] rounded-full" />
           
-          <div className="border rounded-lg w-[25%] text-center flex gap-3 items-center p-4 mt-1">
+          <div className="border rounded-lg w-[25%] text-center flex gap-3 items-center mt-1">
             <span className="pi pi-search p-3"></span>
             <input
               type="text"

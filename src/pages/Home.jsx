@@ -1,28 +1,56 @@
-import React from "react";
-import { Link, Outlet } from "react-router-dom";
-import "primeicons/primeicons.css";
-import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
-import QuestionList from "./questions/QuestionList";
-import {ModalProvider} from "../context/ModalContext";
-function Home() {
-  return (
-  <ModalProvider>
-    <div className=" h-screen overflow-y-hidden">
-        <Navbar />
-        <hr />
-      <div className="flex px-16 h-screen ">
-      <aside className="w-2/12">
-        <Sidebar />
-      </aside>
+import React, {useEffect} from "react";
+import {useAuth} from "../context/AuthContext";
+import {useQuestions} from "../context/QuestionsContext";
+import Question from "../components/Question";
 
-        <main className="w-full px-12 overflow-y-scroll">
-         <Outlet/>
-        </main>
-      </div>
-    </div>
-  </ModalProvider>
-  );
+const Home = () => {
+
+    const {user} =  useAuth();
+
+    console.log("user in home:", user?.name)
+
+    const { questions, isLoading, error, getQuestions } = useQuestions();
+
+    console.log("questions from context:", questions);
+
+      useEffect(() =>{
+        getQuestions();
+      },[]);
+
+    return (
+        <>
+            <div className="p-2 my-3 mb-24">
+
+                <div className="">
+                    <p className="text-2xl font-semibold ">Welcome back,  <span className="text-blue-700 capitalize">{user?.name}</span></p>
+                </div>
+                 <div className="grid grid-cols-3 gap-3 mt-8">
+                     <div className="flex justify-between items-center border border-gray-300 rounded-lg p-5 w-94">
+                         <p className="text-lg font-medium mb-8">Question asked</p>
+                         <p className="w-12 h-12 bg-green-100 rounded-lg p-3 text-lg">12</p>
+                     </div>
+                     <div className="flex justify-between items-center border border-gray-300 rounded-lg p-5 w-94">
+                         <p className="text-lg font-medium mb-8">Answered Question </p>
+                         <p className="w-12 h-12 bg-green-100 rounded-lg p-3 text-lg">2</p>
+                     </div>
+                     <div className="flex justify-between items-center border border-gray-300 rounded-lg p-5 w-94">
+                         <p className="text-lg font-medium mb-8">Reputation</p>
+                         <p className="w-12 h-12 bg-green-100 rounded-lg p-3 text-lg">3</p>
+                     </div>
+
+                 </div>
+                     { isLoading ? (<p className="flex justify-center items-center text-xl font-black">Loading...</p>) : (
+                         <div className="w-full grid grid-cols-3 gap-4 mb-32 mt-12">
+                               {questions?.map((question, index)=>(
+                                 <Question key={index} question={question}/>
+                               ))}
+                         </div>
+                         )
+                     }
+            </div>
+
+        </>
+    );
 }
 
 export default Home;
