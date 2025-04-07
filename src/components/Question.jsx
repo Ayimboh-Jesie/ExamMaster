@@ -1,5 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import FileDisplay from "./FilleDisplay.jsx";
 
 function Question({ question }) {
     const truncateText = (text, maxLength) => {
@@ -13,7 +14,8 @@ function Question({ question }) {
       <div className="border rounded-lg p-4 mt-3 shadow-md w-full bg-white">
         <div className="flex flex-col justify-between gap-3 items-start text-sm">
             <div className={`${question.answers.length > 0  ? "text-green-700" : "text-black"} text-md`}>{question.answers.length} Answers</div>
-          <div className="mt-4 w-5/6">
+          <div className="mt-4 w-full">
+              <FileDisplay filePath={question.file}/>
             <Link to={`/question/${question._id}`} className="font-semibold text-blue-600 hover:underline cursor-pointer">
               {truncateText(question?.title, 50)}
             </Link>

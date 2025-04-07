@@ -35,7 +35,7 @@ const AuthProvider = ({ children }) => {
           setToken(response?.data?.token);
           localStorage.setItem("loggedUser", JSON.stringify(response?.data?.user));
           localStorage.setItem("token", response?.data?.token);
-          window.location.href = '/';
+          window.location.href = '/home';
           console.log("logged in user: ", user);
           return response;
         }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../context/AuthContext";
@@ -7,7 +7,7 @@ import {useQuestions} from "../../context/QuestionsContext";
 
 function AskQuestion({ onClose }) {
 
-    const {getQuestions} = useQuestions();
+  const {getQuestions} = useQuestions();
   const {
     register,
     handleSubmit,
@@ -19,26 +19,57 @@ function AskQuestion({ onClose }) {
   const [error, setError] = useState(null);
   const { token, user } = useAuth();
 
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const fileInputRef = useRef(null);
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) return;
+
+    setFile(selectedFile);
+
+    if (selectedFile.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(selectedFile);
+    } else {
+      setPreview(null);
+    }
+  };
+
+  const handleRemoveFile = () => {
+    setFile(null);
+    setPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const onSubmit = async (data) => {
     try {
       setIsLoading(true);
       setError(null);
 
-      const questionData = {
-        ...data,
-        askedBy: {
-          _id: user._id,
-          name: user.name
-        }
-      };
-        console.log("question data: ", questionData);
+      const formData = new FormData();
 
-//         return;
+      Object.entries(data).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
 
-      const response = await axiosInstance.post("/questions", questionData, {
+      if (file) {
+        formData.append('file', file);
+      }
+
+      formData.append('askedBy', user._id);
+
+      console.log("question data:", formData);
+
+      const response = await axiosInstance.post("/questions", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json"
         }
       });
 
@@ -145,6 +176,20 @@ function AskQuestion({ onClose }) {
           </div>
         </div>
 
+          <div>
+            <select
+                {...register("course", { required: "Course selection is required" })}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select course</option>
+              {["digital electronice", "Analysis", "Statistics", "C programming", "Database"].map((item) => (
+                  <option key={item} value={item}>{item}</option>
+              ))}
+            </select>
+            {errors.course && (
+                <p className="text-red-500 text-sm mt-1">{errors.course.message}</p>
+            )}
+          </div>
         <div>
           <input
             placeholder="What is your question?"
@@ -181,6 +226,65 @@ function AskQuestion({ onClose }) {
           />
           {errors.description && (
             <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+          )}
+        </div>
+
+        <div className="mt-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Attach File (Optional)
+          </label>
+
+          {/* Hidden file input */}
+          <input
+              type="file"
+              id="file-upload"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              className="hidden"
+              accept="image/*,.pdf,.doc,.docx" // Limit file types if needed
+          />
+
+          {/* Custom upload button */}
+          <label
+              htmlFor="file-upload"
+              className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            <svg className="-ml-1 mr-2 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+            Choose File
+          </label>
+          <span className="ml-2 text-sm text-gray-500">
+    {file ? file.name : 'No file chosen'}
+  </span>
+
+          {/* File preview */}
+          {preview && (
+              <div className="mt-4 relative">
+                {file.type.startsWith('image/') ? (
+                    <img
+                        src={preview}
+                        alt="Preview"
+                        className="h-32 w-32 object-cover rounded-md"
+                    />
+                ) : (
+                    <div className="flex items-center p-3 bg-gray-100 rounded-md">
+                      <svg className="h-10 w-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                      </svg>
+                      <span className="ml-2">{file.name}</span>
+                    </div>
+                )}
+                <button
+                    type="button"
+                    onClick={handleRemoveFile}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                >
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
           )}
         </div>
 

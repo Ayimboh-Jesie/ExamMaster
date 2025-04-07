@@ -4,8 +4,7 @@ import axiosInstance from "../../config/axios";
 import {useForm} from "react-hook-form";
 import {useAuth} from "../../context/AuthContext";
 import { toast } from "react-toastify";
-import Modal from "../../components/Modal";
-import Comment from "../../components/Comment";
+import Comments from "../../components/Comments.jsx";
 
 const QuestionDetails = () => {
   const { questionId } = useParams();
@@ -14,8 +13,8 @@ const QuestionDetails = () => {
   const [loading, setLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [openComment, setOpenComment] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [selectedAnswerId, setSelectedAnswerId] = useState(null);
 
   const {token, user} = useAuth();
 
@@ -44,7 +43,7 @@ const QuestionDetails = () => {
             setNewAnswer(response.data);
             setIsLoading(false);
             reset();
-            fetchQuestionDetails();
+            await fetchQuestionDetails();
             toast.success("You have answered a question successfully!");
        } catch(err){
              console.log("Error answering question", err.response?.data || err.message);
@@ -67,7 +66,16 @@ const QuestionDetails = () => {
     }
   };
 
-  useEffect(() => {
+    const toggleComments = (answerId) => {
+        if (selectedAnswerId === answerId) {
+            setSelectedAnswerId(null);
+        } else {
+            setSelectedAnswerId(answerId);
+            setSelectedAnswer(data.answers.find(a => a._id === answerId));
+        }
+    };
+
+   useEffect(() => {
     fetchQuestionDetails();
   }, [questionId]);
 
@@ -179,13 +187,21 @@ const handleLikeAction = async (answerId, action) => {
                                    <i className="pi pi-thumbs-down text-xl"></i>
                                 </button>
                             </div>
-                            <button onClick={() =>{setSelectedAnswer(answer); setOpenComment(true)} }>
-                                <i className="pi pi-comments text-xl text-gray-400 hover:text-gray-700"></i>
+                            <button onClick={() =>{toggleComments(answer._id)} }>
+                                <span>{answer?.comments?.length}</span>
+                                <i className="pi pi-comments text-xl text-gray-400 hover:text-gray-700 ml-2"></i>
                             </button>
                             <i className="pi pi-share-alt text-xl text-gray-400 hover:text-gray-700"></i>
                           </div>
                         </div>
-                      </div>)
+                          {selectedAnswerId === answer._id && (
+                              <Comments
+                                  answer={answer}
+                                  onClose={() => setSelectedAnswerId(null)}
+                              />
+                          )}
+                      </div>
+                      )
                     })
                   ) : (
                     <p>No answers yet. Be the first to answer!</p>
@@ -209,11 +225,11 @@ const handleLikeAction = async (answerId, action) => {
           </div>
       )}
 
-        {openComment &&
-            <Modal open={openComment} onClose={() => setOpenComment(false)}>
-                <Comment answer={selectedAnswer} onClose={()=>setOpenComment(false)}/>
-            </Modal>
-        }
+        {/*{openComment &&*/}
+        {/*    <Modal open={openComment} onClose={() => setOpenComment(false)}>*/}
+        {/*        <Comments answer={selectedAnswer} onClose={()=>setOpenComment(false)}/>*/}
+        {/*    </Modal>*/}
+        {/*}*/}
     </>
   );
 };
