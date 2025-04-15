@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../config/axios";
 import {useForm} from "react-hook-form";
 import {useAuth} from "../../context/AuthContext";
 import { toast } from "react-toastify";
 import Comments from "../../components/Comments.jsx";
+import {ModalContext} from "../../context/ModalContext.jsx";
 
 const QuestionDetails = () => {
   const { questionId } = useParams();
@@ -15,6 +16,7 @@ const QuestionDetails = () => {
   const [error, setError] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [selectedAnswerId, setSelectedAnswerId] = useState(null);
+    const {  setIsLoginOpen } = useContext(ModalContext);
 
   const {token, user, isAuthenticated} = useAuth();
 
@@ -230,6 +232,7 @@ const handleLikeAction = async (answerId, action) => {
                             handleSubmit(answerQuestion)();
                         } else {
                             toast.warning("Please log in to answer the question");
+                            setIsLoginOpen(true);
                         }
                     }}
                     className="bg-blue-500 rounded-lg text-white w-[20%] h-[12%] p-3 mb-24"
