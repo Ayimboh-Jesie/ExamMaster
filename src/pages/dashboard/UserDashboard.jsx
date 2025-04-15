@@ -22,8 +22,8 @@ function UserDashboard({filteredQuestions, answeredQuestionsCount}) {
         </div>
         <div className="grid grid-cols-3 gap-3 mt-8">
 
-          <StatsCard title="Questions Asked" value={filteredQuestions?.length || 0} bg="bg-red-200" />
-          <StatsCard title="Answered Questions" value={answeredQuestionsCount || 0} bg="bg-green-100" />
+          <StatsCard title="Questions Asked" value={filteredQuestions?.length || 0} bg="bg-red-200" icon="pi pi-question text-2xl text-orange-500"/>
+          <StatsCard title="Answered Questions" value={answeredQuestionsCount || 0} bg="bg-green-100" icon="pi pi-send text-2xl text-cyan-500"/>
 
         </div>
         { isLoading ? (<p className="flex justify-center items-center text-xl font-black">Loading...</p>) : (
