@@ -13,26 +13,26 @@ export const SidebarItems = [
   },
   {
     id: 3,
-    label: "Tags",
-    path: "tag",
-    icon: "pi pi-tags",
-  },
-  {
-    id: 4,
-    label: "Save",
-    path: "/saved",
-    icon: "pi pi-save",
-  },
-  {
-    id: 5,
-    label: "User",
+    label: "Users",
     path: "/users",
     icon: "pi pi-user",
   },
   {
+    id: 4,
+    label: "Examiners",
+    path: "/examiners",
+    icon: "pi pi-save",
+  },
+  {
+    id: 5,
+    label: "Field of Study",
+    path: "/field_of_study",
+    icon: "pi pi-tag",
+  },
+  {
     id: 6,
-    label: "Discussions",
-    path: "/discussions",
+    label: "Course",
+    path: "/course",
     icon: "pi pi-envelope",
   },
 ];

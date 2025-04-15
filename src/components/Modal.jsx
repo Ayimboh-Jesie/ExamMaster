@@ -4,7 +4,7 @@ export default function Modal({ open, onClose, children }) {
     <div
     onClick={onClose}
       className={`fixed inset-0 flex justify-center items-center cursor-pointer transition-colors
-        ${open ? "visible bg-black/70" : "invisible"}`}
+        ${open ? "visible bg-black/70 z-10" : "invisible"}`}
     >
       <div
         onClick={(e) => e.stopPropagation()}

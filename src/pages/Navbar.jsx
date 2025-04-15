@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import  { useState, useContext } from "react";
 import Login from "./Login";
 import Modal from "../components/Modal";
 import SignUp from "./SignUp";
@@ -37,8 +37,6 @@ function Navbar() {
             >
               Ask question
             </button>
-            <button className="w-30 p-3 font-bold">Papers</button>
-            <button className="w-30 p-3 font-bold">Level</button>
             <div className="w-fit flex justify-end items-center gap-4">
               {
                 isAuthenticated() ? (

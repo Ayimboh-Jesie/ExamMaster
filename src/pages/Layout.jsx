@@ -11,12 +11,12 @@ function Layout() {
     <div className=" h-screen overflow-y-hidden">
         <Navbar />
         <hr />
-      <div className="flex px-16 h-screen ">
-      <aside className="w-2/12">
+      <div className="flex h-screen ">
+      <aside className="w-3/12">
         <Sidebar />
       </aside>
 
-        <main className="w-full px-12 overflow-y-scroll">
+        <main className="w-full px-3 overflow-y-scroll">
          <Outlet/>
         </main>
       </div>

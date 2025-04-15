@@ -8,6 +8,7 @@ function SignUp() {
 
     const {closeSignUpModal, setIsLoginOpen} = useContext(ModalContext);
   const [isLoading, setIsLoading] = useState(false);
+
   const handleLoginClick = () => {
       console.log("opening login form and closing signup form");
     setIsLoginOpen(true);
@@ -23,8 +24,12 @@ function SignUp() {
   } = useForm();
 
   const onSubmit = async (data) => {
+    const formData = {
+      ...data,
+      role: "user"
+    }
     try {
-      const response = await axiosInstance.post(`users/register`, data);
+      const response = await axiosInstance.post(`users/register`, formData);
       setIsLoading(true);
       if (response) {
         reset();

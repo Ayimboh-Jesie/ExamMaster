@@ -1,9 +1,11 @@
 import { useContext, createContext, useState, useEffect } from "react";
 import axiosInstance from "../config/axios"
+import {ModalContext} from "./ModalContext";
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
+  const {setIsLoginOpen} = useContext(ModalContext);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [token, setToken] = useState(localStorage.getItem("loggedUser") || "");
@@ -52,7 +54,9 @@ const AuthProvider = ({ children }) => {
     setUser(null);
     setToken("");
     localStorage.removeItem("loggedUser");
-    window.location.href = '/';
+    localStorage.removeItem("token");
+    window.location.href = '/questions';
+    setIsLoginOpen(true);
   };
 
   return (

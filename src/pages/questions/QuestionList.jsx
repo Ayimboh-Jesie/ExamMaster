@@ -1,13 +1,16 @@
-import React, {useEffect, useState} from "react";
-import { Questions } from "../../constants/Questions";
+import React, {useEffect} from "react";
 import Question from "../../components/Question";
-import axiosInstance from "../../config/axios";
-import Home from "../Home";
 import {useQuestions} from "../../context/QuestionsContext";
+import {useAuth} from "../../context/AuthContext.jsx";
+import QuestionDataList from "../dashboard/questions/QuestionDataList.jsx";
 
 function QuestionList() {
 
-    const { questions, isLoading, error, getQuestions } = useQuestions();
+  const {user} = useAuth();
+
+  const userRole = user?.role
+
+  const { questions, isLoading, error, getQuestions } = useQuestions();
 
   useEffect(() =>{
     getQuestions();
@@ -21,12 +24,15 @@ function QuestionList() {
             <p> Loading...</p>
         </div>
 
-        ) : (
-        <div className="w-full grid grid-cols-3 gap-4 mb-32">
-              {questions?.map((question, index)=>(
-                <Question key={index} question={question}/>
-              ))}
-        </div>
+        ) :
+        (
+            userRole === "admin" ? (<QuestionDataList/> ):(
+                <div className="w-full grid grid-cols-3 gap-4 mb-32">
+                  {questions?.map((question, index) => (
+                      <Question key={index} question={question}/>
+                  ))}
+                </div>)
+
         )
     }
     </>

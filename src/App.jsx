@@ -1,13 +1,13 @@
 import React from 'react'
-import {useState} from 'react'
-import { ToastContainer, toast } from 'react-toastify';
+import "primereact/resources/themes/lara-light-cyan/theme.css";
+import "primereact/resources/primereact.min.css";
+import 'primeicons/primeicons.css';
+import { ToastContainer } from 'react-toastify';
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import QuestionList from './pages/questions/QuestionList'
 import Layout from './pages/Layout.jsx'
 import Home from './pages/Home.jsx'
-import Sidebar from './pages/Sidebar.jsx'
-import Navbar from './pages/Navbar.jsx'
 import Login from './pages/Login.jsx'
 import SignUp from './pages/SignUp.jsx'
 import LandingPage from './pages/LandingPage.jsx'
@@ -19,9 +19,8 @@ import Dashboard from './pages/dashboard/Home';
 import QuestionDetails from './pages/questions/QuestionDetails';
 import Answer from './components/Answer.jsx';
 import ProtectedRoute from "./components/ProtectedRoute";
-import "primereact/resources/themes/lara-light-cyan/theme.css";
 import {QuestionsProvider} from "./context/QuestionsContext";
-import 'primeicons/primeicons.css';
+import UserList from "./pages/dashboard/users/UserList.jsx";
 
 
         
@@ -32,9 +31,11 @@ function App() {
    <Router>
     <Routes>
       <Route path='/' element={<Layout/>}>
+
         <Route path='questions' element={<QuestionList/>}/>
         <Route path='home' element={<Home/>}/>
         <Route path='question/:questionId' element={<QuestionDetails/>}/>
+          <Route path="/users" element={<UserList/>}/>
       </Route>
       <Route path='/login' element={<Login/>}/>
       <Route path='/ans' element={<Answer/>}/>

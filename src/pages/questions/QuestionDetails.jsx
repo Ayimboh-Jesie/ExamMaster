@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../config/axios";
 import {useForm} from "react-hook-form";
@@ -16,7 +16,7 @@ const QuestionDetails = () => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [selectedAnswerId, setSelectedAnswerId] = useState(null);
 
-  const {token, user} = useAuth();
+  const {token, user, isAuthenticated} = useAuth();
 
    const {
       register,
@@ -136,11 +136,17 @@ const handleLikeAction = async (answerId, action) => {
         <div className="px-12 my-12">
             <h2 className="text-2xl my-3">{data?.title}</h2>
             <div className="flex gap-12 text-sm text-gray-400">
-              <p>Asked Today</p>
-              <p>Modified Today</p>
-              <p>Asked By {data?.askedBy?.username}</p>
+              <p>Asked on  {new Date(data?.createdAt).toLocaleDateString()}</p>
+              <p>Asked By {data?.askedBy?.name}</p>
             </div>
             <div className="my-4 border border-b-gray-400"></div>
+            <div>
+                <img
+                    src={`http://localhost:3000/${data.file}`}
+                    alt={`img`}
+                    className={`w-1/3 h-1/3`}
+                />
+            </div>
             <div className="flex gap-8">
               <div className="">
                 <p className="leading-18 text-justify">{data?.description}</p>
@@ -218,18 +224,21 @@ const handleLikeAction = async (answerId, action) => {
                    className="w-[70%] h-[50%] border p-8 my-4">
 
                  </textarea>
-                <button onClick={handleSubmit(answerQuestion)} className="bg-blue-500 rounded-lg text-white w-[20%] h-[12%] p-3 mb-24">
+                <button
+                    onClick={() => {
+                        if (isAuthenticated()) {
+                            handleSubmit(answerQuestion)();
+                        } else {
+                            toast.warning("Please log in to answer the question");
+                        }
+                    }}
+                    className="bg-blue-500 rounded-lg text-white w-[20%] h-[12%] p-3 mb-24"
+                >
                   Post Your Answer
                 </button>
             </div>
           </div>
       )}
-
-        {/*{openComment &&*/}
-        {/*    <Modal open={openComment} onClose={() => setOpenComment(false)}>*/}
-        {/*        <Comments answer={selectedAnswer} onClose={()=>setOpenComment(false)}/>*/}
-        {/*    </Modal>*/}
-        {/*}*/}
     </>
   );
 };

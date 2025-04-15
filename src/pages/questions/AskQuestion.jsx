@@ -90,7 +90,7 @@ function AskQuestion({ onClose }) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-4 py-8 z-10">
       <header className="mb-6 text-center">
         <h1 className="text-3xl font-semibold text-gray-900">Ask a Question</h1>
         <p className="text-gray-600 mt-2">Get answers to all your questions.</p>
@@ -182,7 +182,7 @@ function AskQuestion({ onClose }) {
                 className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select course</option>
-              {["digital electronice", "Analysis", "Statistics", "C programming", "Database"].map((item) => (
+              {["digital electronice", "Analysis", "Statistics", "C programming", "Database", "computer network 1"].map((item) => (
                   <option key={item} value={item}>{item}</option>
               ))}
             </select>
