@@ -5,6 +5,7 @@ import SignUp from "./SignUp";
 import AskQuestion from "./questions/AskQuestion";
 import {ModalContext} from "../context/ModalContext";
 import {useAuth} from "../context/AuthContext";
+import {toast} from "react-toastify";
 
 function Navbar() {
   const { closeLoginModal, setIsLoginOpen, isLoginOpen, isSignUpOpen, closeSignUpModal } = useContext(ModalContext);
@@ -32,7 +33,14 @@ function Navbar() {
           
           <div className="flex justify-between gap-2 w-[50%]">
             <button 
-              onClick={() => setOpenAskQuestionModal(true)}
+              onClick={() => {
+                if(isAuthenticated()){
+                  setOpenAskQuestionModal(true);
+                }else{
+                  toast.warning("Please login to ask a question")
+                  setIsLoginOpen(true);
+                }
+              }}
               className="border rounded-lg w-30 p-3 font-bold bg-blue-600 text-white"
             >
               Ask question
